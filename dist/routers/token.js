@@ -17,7 +17,7 @@ router.post('/', decodeTokenIfAny, (req, res) => __awaiter(void 0, void 0, void 
         res.status(201).json({ user: req.user });
     }
     else {
-        res.status(400);
+        res.status(404).json({ message: 'token not found or invalid' });
     }
 }));
 module.exports = router;

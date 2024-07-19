@@ -21,10 +21,12 @@ const decodeToken = (req: Request, res: Response, next: NextFunction)=>{
   }
 }
 
-const decodeTokenIfAny = (req: Request, res: Response, next: NextFunction)=>{
+const decodeTokenIfAny = async (req: Request, res: Response, next: NextFunction)=>{
   try{
-    const decoded = jwt.verify(req.headers.token, process.env.JWT_KEY);
-    req.user = decoded || null;
+    if(req.headers.token){
+      const decoded = await jwt.verify(req.headers.token, process.env.JWT_KEY);
+      req.user = decoded;  
+    }
     next();
   } catch(err: any) {
     next();
