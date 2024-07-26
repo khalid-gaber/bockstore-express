@@ -21,6 +21,9 @@ router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, functio
         if (user.length) {
             res.status(400).json({ message: 'this user is already exist' });
         }
+        else if (pass.length < 6) {
+            res.status(400).json({ message: 'password should be at least 6 characters' });
+        }
         else {
             const hash = yield bcrypt.hash(pass, 10);
             const newUser = yield User.create({ username, pass: hash, email });
@@ -29,7 +32,12 @@ router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, functio
         }
     }
     catch (err) {
-        res.status(200).json({ message: err.message });
+        if (err.message) {
+            res.status(400).json({ message: err.message });
+        }
+        else {
+            res.status(400).json({ message: 'something went wrong with register route from server' });
+        }
     }
 }));
 router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -51,7 +59,12 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
     }
     catch (err) {
-        res.status(200).json({ message: err.message });
+        if (err.message) {
+            res.status(400).json({ message: err.message });
+        }
+        else {
+            res.status(400).json({ message: 'something went wrong with login route from server' });
+        }
     }
 }));
 module.exports = router;

@@ -12,6 +12,8 @@ router.post('/register', async (req: Request, res: Response) => {
         const user = await User.find({username: username});
         if(user.length) {
             res.status(400).json({message: 'this user is already exist'});
+        } else if(pass.length < 6) {
+            res.status(400).json({message: 'password should be at least 6 characters'});
         } else {
             const hash = await bcrypt.hash(pass, 10)
             const newUser = await User.create({username, pass: hash, email});
@@ -19,7 +21,11 @@ router.post('/register', async (req: Request, res: Response) => {
             res.status(201).json({...newUser._doc, pass: null, token});
     }
     } catch (err: any) {
-        res.status(200).json({message: err.message});
+        if (err.message){
+            res.status(400).json({message: err.message});
+        } else {
+            res.status(400).json({message: 'something went wrong with register route from server'});
+        }
     }
 })
 
@@ -39,7 +45,11 @@ router.post('/login', async (req: Request, res: Response) => {
             }
         }
     } catch (err: any) {
-        res.status(200).json({message: err.message});
+        if (err.message){
+            res.status(400).json({message: err.message});
+        } else {
+            res.status(400).json({message: 'something went wrong with login route from server'});
+        }
     }
 })
 
