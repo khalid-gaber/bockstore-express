@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const Token = require('../models/Token');
-const { createAccessToken } = require('../utility/utilities');
+const { createAccessToken } = require('../utility/functionUtilities');
 
 router.post('/', async (req: Request, res: Response ) => {
     try {

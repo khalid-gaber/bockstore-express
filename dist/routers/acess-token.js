@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const Token = require('../models/Token');
-const { createAccessToken } = require('../utility/utilities');
+const { createAccessToken } = require('../utility/functionUtilities');
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const refreshToken = yield Token.findById(req.cookies.refreshToken);
