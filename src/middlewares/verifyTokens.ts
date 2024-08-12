@@ -8,32 +8,36 @@ declare module 'express' {
         username: string,
         iat: number
       };
+      decoded?: {
+        userId: string
+      } 
     }
   }
 
-const decodeToken = (req: Request, res: Response, next: NextFunction)=>{
+function authenticateToken(req: Request, res: Response, next: NextFunction) {
   try {
-      const decoded = jwt.verify(req.headers.token, process.env.JWT_KEY);
-      req.user = decoded;
-      next();
-  } catch(err: any) {
-      res.status(400).json({message: err.message});
-  }
-}
-
-const decodeTokenIfAny = async (req: Request, res: Response, next: NextFunction)=>{
-  try{
-    if(req.headers.token){
-      const decoded = await jwt.verify(req.headers.token, process.env.JWT_KEY);
-      req.user = decoded;  
+    const accessToken = req.headers.authorization?.split('Bearer ')[1];
+    console.log(accessToken);
+    const decoded = jwt.verify(accessToken, process.env.ACCESS_JWT_KEY);
+    if(decoded) {
+        req.decoded = decoded;
+        next();
+    } else {
+        res.sendStatus(403);
     }
-    next();
-  } catch(err: any) {
-    next();
+  } catch (error: any) {
+    res.sendStatus(403);
   }
+
 }
 
+
+
+
+
+///////export///////////
 module.exports = {
-  decodeToken,
-  decodeTokenIfAny
+  authenticateToken
 };
+
+
