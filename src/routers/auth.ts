@@ -43,7 +43,7 @@ router.post('/login', async (req: Request, res: Response ) => {
                 const refreshToken = createRefreshToken(user._id);
                 const accessToken = createAccessToken(user._id);
                 await Token.create({_id: refreshToken, userId: user._id});
-                res.cookie('refreshToken', refreshToken, {maxAge: 60000*60*24*365*10, httpOnly: true, sameSite: 'strict'});
+                res.cookie('refreshToken', refreshToken, {maxAge: 60000*60*24*365*10});
                 res.json({accessToken});
             }
         }

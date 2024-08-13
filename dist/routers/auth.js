@@ -56,7 +56,7 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 const refreshToken = createRefreshToken(user._id);
                 const accessToken = createAccessToken(user._id);
                 yield Token.create({ _id: refreshToken, userId: user._id });
-                res.cookie('refreshToken', refreshToken, { maxAge: 60000 * 60 * 24 * 365 * 10, httpOnly: true, sameSite: 'strict' });
+                res.cookie('refreshToken', refreshToken, { maxAge: 60000 * 60 * 24 * 365 * 10 });
                 res.json({ accessToken });
             }
         }
