@@ -17,7 +17,6 @@ declare module 'express' {
 function authenticateToken(req: Request, res: Response, next: NextFunction) {
   try {
     const accessToken = req.headers.authorization?.split('Bearer ')[1];
-    console.log(accessToken);
     const decoded = jwt.verify(accessToken, process.env.ACCESS_JWT_KEY);
     if(decoded) {
         req.decoded = decoded;
@@ -26,18 +25,37 @@ function authenticateToken(req: Request, res: Response, next: NextFunction) {
         res.sendStatus(403);
     }
   } catch (error: any) {
+    console.log(error.message || 'something went wrong');
     res.sendStatus(403);
   }
-
 }
 
-
+function decodeTokenIfAny(req: Request, res: Response, next: NextFunction) {
+  try {
+    const accessToken = req.headers.authorization?.split('Bearer ')[1];
+    if(accessToken && accessToken !== 'null' && accessToken !== 'undefined') {
+      const decoded = jwt.verify(accessToken, process.env.ACCESS_JWT_KEY);
+      if(decoded) {
+          req.decoded = decoded;
+          next();
+      } else {
+        res.sendStatus(403);
+      }
+    } else {
+      next();
+    }
+  } catch (error: any) {
+    console.log(error.message);
+    next();
+  }
+}
 
 
 
 ///////export///////////
 module.exports = {
-  authenticateToken
+  authenticateToken,
+  decodeTokenIfAny
 };
 
 

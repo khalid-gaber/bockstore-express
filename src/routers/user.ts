@@ -19,19 +19,44 @@ router.post('/', authenticateToken, async (req: Request, res: Response ) => {
     }
 })
 
-// router.put('/:id', async (req: Request, res: Response)=>{
-//     try {
-//         const {email, username} = req.body;
-//         if(req.user?._id === req.params.id){
-//             const newUser = await User.updateOne({_id: req.params.id}, {email, username, new: true})
-//             res.status(201).json({newUser, message: 'updated successfully'});
-//         } else {
-//             res.status(400).json({message: "you haven't the permision to do this operation"});
-//         }
-//     } catch(err: any) {
-//         res.status(400).json({message: err.message});
-//     }
-// })
+router.put('/', authenticateToken, async (req: Request, res: Response)=>{
+    try {
+        if(req.decoded) {
+            const result = await User.updateOne(
+                {_id: req.decoded.userId}, 
+                {$set: 
+                    {
+                        username: req.body.username,
+                        email: req.body.email,
+                        phone: req.body.phone,
+                        country: req.body.country,
+                        gender: req.body.gender,
+                    }
+                }
+            );
+            res.sendStatus(201);
+        } else {
+            res.sendStatus(403);
+        }
+    } catch (err: any) {
+        console.log(err.message);
+        res.sendStatus(403);
+    }
+})
+
+router.put('/:id', async (req: Request, res: Response)=>{
+    try {
+        const {email, username} = req.body;
+        if(req.user?._id === req.params.id){
+            const newUser = await User.updateOne({_id: req.params.id}, {email, username, new: true})
+            res.status(201).json({newUser, message: 'updated successfully'});
+        } else {
+            res.status(400).json({message: "you haven't the permision to do this operation"});
+        }
+    } catch(err: any) {
+        res.status(400).json({message: err.message});
+    }
+})
 
 // router.delete('/:id', async (req: Request, res: Response)=>{
 //     try {
